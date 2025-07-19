@@ -124,20 +124,20 @@
   /* Legal Brand Components */
   .btn-legal {
     @apply bg-gradient-to-r from-primary to-primary-glow text-primary-foreground 
-           px-8 py-3 rounded-lg font-semibold shadow-elegant 
-           hover:shadow-glow transition-all duration-300 
+           px-8 py-3 rounded-lg font-semibold shadow-lg 
+           hover:shadow-xl transition-all duration-300 
            hover:scale-105 active:scale-95;
   }
 
   .btn-secondary {
     @apply bg-secondary text-secondary-foreground px-6 py-2 rounded-lg 
-           font-medium shadow-card hover:shadow-elegant 
+           font-medium shadow-md hover:shadow-lg 
            transition-all duration-300 hover:scale-105;
   }
 
   .card-legal {
-    @apply bg-card border border-border rounded-xl shadow-card 
-           hover:shadow-elegant transition-all duration-300 
+    @apply bg-card border border-border rounded-xl shadow-md 
+           hover:shadow-lg transition-all duration-300 
            hover:scale-[1.02] p-6;
   }
 
@@ -158,7 +158,7 @@
   .revolving-circle {
     @apply absolute w-16 h-16 bg-gradient-to-br from-primary to-secondary 
            rounded-full flex items-center justify-center text-white 
-           shadow-glow hover:scale-110 transition-transform duration-300 cursor-pointer;
+           shadow-xl hover:scale-110 transition-transform duration-300 cursor-pointer;
     animation: revolve 20s linear infinite;
   }
 
