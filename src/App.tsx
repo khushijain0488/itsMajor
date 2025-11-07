@@ -12,7 +12,9 @@ import Rights from "./pages/Rights";
 import Cases from "./pages/Cases";
 import Nation from "./pages/Nation";
 import NotFound from "./pages/NotFound";
-
+import ChatbotPage from "./pages/chatBot";
+import ConstitutionalRightsIndia from "./pages/ConstituinalRights";
+import Allconst from "./pages/Allconst"
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -32,6 +34,8 @@ const App = () => (
           <Route path="/nation" element={<Nation />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
+          <Route path="/chatbot" element={<ChatbotPage/>}/>
+            <Route path="/Crights" element={<ConstitutionalRightsIndia/>}/>
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

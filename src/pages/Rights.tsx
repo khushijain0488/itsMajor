@@ -4,8 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Scale, Shield, Users, Home, Briefcase, Heart, BookOpen, AlertCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";  // ✅ correct import
 
 const Rights = () => {
+  const navigate = useNavigate(); // ✅ navigation hook
+
   const rightsCategories = [
     {
       icon: Scale,
@@ -13,7 +16,7 @@ const Rights = () => {
       description: "Your fundamental rights guaranteed by the Constitution",
       rights: [
         "Freedom of Speech",
-        "Freedom of Religion", 
+        "Freedom of Religion",
         "Right to Privacy",
         "Due Process",
         "Equal Protection",
@@ -104,7 +107,7 @@ const Rights = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1">
         {/* Hero Section */}
         <section className="hero-gradient text-primary-foreground py-16">
@@ -112,7 +115,7 @@ const Rights = () => {
             <Scale className="h-16 w-16 mx-auto mb-6 text-secondary" />
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Know Your Rights</h1>
             <p className="text-xl opacity-90 mb-8 max-w-3xl mx-auto">
-              Understanding your legal rights is the first step toward protecting yourself and seeking justice. 
+              Understanding your legal rights is the first step toward protecting yourself and seeking justice.
               Explore comprehensive information about your fundamental rights as a citizen.
             </p>
           </div>
@@ -170,7 +173,7 @@ const Rights = () => {
                     </div>
                     <p className="text-sm text-muted-foreground">{category.description}</p>
                   </CardHeader>
-                  
+
                   <CardContent>
                     <div className="space-y-2">
                       {category.rights.map((right, rightIndex) => (
@@ -244,10 +247,17 @@ const Rights = () => {
               Knowledge is power. Understanding your rights is the first step toward protecting them.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="btn-secondary">
+              <Button
+                className="btn-secondary"
+                onClick={() => navigate("/Crights")}  // ✅ fixed navigation
+              >
                 Download Rights Handbook
               </Button>
-              <Button variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+              <Button
+                variant="outline"
+                className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+               onClick={() => navigate("/")}
+             >
                 Find Legal Help
               </Button>
             </div>

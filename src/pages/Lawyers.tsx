@@ -1,292 +1,307 @@
-import { useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import React from "react";
+import { ArrowLeft, Star, MapPin, Phone, Mail, Calendar, Award, Globe, BookOpen, Users, Clock, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, Phone, Mail, Calendar, Award, Search } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
 
-const Lawyers = () => {
-  const { toast } = useToast();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSpecialty, setSelectedSpecialty] = useState("all");
+interface LawyerProfileProps {
+  lawyer?: {
+    id: number;
+    name: string;
+    specialty: string;
+    experience: string;
+    rating: number;
+    reviews: number;
+    location: string;
+    phone: string;
+    email: string;
+    education: string;
+    description: string;
+    price: string;
+    languages: string[];
+    verified: boolean;
+  };
+  onBack?: () => void;
+}
 
-  const lawyers = [
+const LawyerProfile: React.FC<LawyerProfileProps> = ({ lawyer, onBack }) => {
+  // Default lawyer data if none provided
+  const defaultLawyer = {
+    id: 1,
+    name: "Alexandra Rodriguez",
+    specialty: "Criminal Defense",
+    experience: "12 years",
+    rating: 4.9,
+    reviews: 156,
+    location: "New York, NY",
+    phone: "(555) 123-4567",
+    email: "alexandra@lawfirm.com",
+    education: "Harvard Law School",
+    description: "Experienced criminal defense attorney specializing in white-collar crimes and federal cases.",
+    price: "$450/hour",
+    languages: ["English", "Spanish"],
+    verified: true
+  };
+
+  const currentLawyer = lawyer || defaultLawyer;
+
+  const achievements = [
+    "Super Lawyers Rising Star 2020-2023",
+    "Best Lawyers in America 2022-2024",
+    "Top 40 Under 40 Criminal Defense Attorneys",
+    "ABA Criminal Justice Section Member"
+  ];
+
+  const practiceAreas = [
+    "White Collar Criminal Defense",
+    "Federal Criminal Defense",
+    "Drug Crimes",
+    "DUI/DWI Defense",
+    "Domestic Violence",
+    "Theft & Property Crimes"
+  ];
+
+  const clientReviews = [
     {
       id: 1,
-      name: "Alexandra Rodriguez",
-      specialty: "Criminal Defense",
-      experience: "12 years",
-      rating: 4.9,
-      reviews: 156,
-      location: "New York, NY",
-      phone: "(555) 123-4567",
-      email: "alexandra@lawfirm.com",
-      education: "Harvard Law School",
-      description: "Experienced criminal defense attorney specializing in white-collar crimes and federal cases.",
-      price: "$450/hour",
-      languages: ["English", "Spanish"],
-      verified: true
+      name: "John D.",
+      rating: 5,
+      date: "2 weeks ago",
+      review: "Alexandra was exceptional in handling my case. Professional, knowledgeable, and got great results."
     },
     {
       id: 2,
-      name: "David Kim",
-      specialty: "Family Law",
-      experience: "8 years",
-      rating: 4.8,
-      reviews: 89,
-      location: "Los Angeles, CA",
-      phone: "(555) 234-5678",
-      email: "david@familylaw.com",
-      education: "Stanford Law School",
-      description: "Compassionate family law attorney helping families navigate divorce, custody, and adoption.",
-      price: "$350/hour",
-      languages: ["English", "Korean"],
-      verified: true
+      name: "Sarah M.",
+      rating: 5,
+      date: "1 month ago",
+      review: "Outstanding lawyer! She explained everything clearly and fought hard for my rights."
     },
     {
       id: 3,
-      name: "Sarah Williams",
-      specialty: "Corporate Law",
-      experience: "15 years",
-      rating: 4.9,
-      reviews: 203,
-      location: "Chicago, IL",
-      phone: "(555) 345-6789",
-      email: "sarah@corplaw.com",
-      education: "Yale Law School",
-      description: "Corporate attorney specializing in mergers, acquisitions, and business litigation.",
-      price: "$550/hour",
-      languages: ["English", "French"],
-      verified: true
-    },
-    {
-      id: 4,
-      name: "Michael Johnson",
-      specialty: "Personal Injury",
-      experience: "10 years",
-      rating: 4.7,
-      reviews: 124,
-      location: "Miami, FL",
-      phone: "(555) 456-7890",
-      email: "michael@injurylaw.com",
-      education: "University of Miami Law",
-      description: "Dedicated personal injury lawyer fighting for accident victims and their families.",
-      price: "$400/hour",
-      languages: ["English"],
-      verified: true
-    },
-    {
-      id: 5,
-      name: "Emily Chen",
-      specialty: "Immigration Law",
-      experience: "7 years",
-      rating: 4.8,
-      reviews: 167,
-      location: "San Francisco, CA",
-      phone: "(555) 567-8901",
-      email: "emily@immigrationlaw.com",
-      education: "UC Berkeley Law",
-      description: "Immigration attorney helping individuals and families achieve their American dreams.",
-      price: "$300/hour",
-      languages: ["English", "Mandarin", "Cantonese"],
-      verified: true
-    },
-    {
-      id: 6,
-      name: "Robert Brown",
-      specialty: "Real Estate Law",
-      experience: "20 years",
-      rating: 4.9,
-      reviews: 298,
-      location: "Boston, MA",
-      phone: "(555) 678-9012",
-      email: "robert@realestatelaw.com",
-      education: "Boston University Law",
-      description: "Real estate attorney with extensive experience in commercial and residential transactions.",
-      price: "$425/hour",
-      languages: ["English"],
-      verified: true
+      name: "Michael R.",
+      rating: 4,
+      date: "2 months ago",
+      review: "Very satisfied with the service. Professional and responsive throughout the entire process."
     }
   ];
 
-  const specialties = [
-    "all",
-    "Criminal Defense",
-    "Family Law",
-    "Corporate Law",
-    "Personal Injury",
-    "Immigration Law",
-    "Real Estate Law"
-  ];
-
-  const filteredLawyers = lawyers.filter(lawyer => {
-    const matchesSearch = lawyer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lawyer.specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lawyer.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSpecialty = selectedSpecialty === "all" || lawyer.specialty === selectedSpecialty;
-    return matchesSearch && matchesSpecialty;
-  });
-
-  const handleRegisterWithLawyer = (lawyer: any) => {
-    toast({
-      title: "Registration Request Sent",
-      description: `Your request to connect with ${lawyer.name} has been sent. They will contact you within 24 hours.`,
-    });
-  };
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="hero-gradient text-primary-foreground py-16">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Find Your Legal Expert</h1>
-            <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
-              Connect with verified, experienced lawyers who specialize in your legal needs
-            </p>
-          </div>
-        </section>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="container mx-auto px-4 py-4">
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Lawyers
+          </Button>
+        </div>
+      </div>
 
-        {/* Search and Filter */}
-        <section className="py-8 bg-background border-b">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search by name, specialty, or location..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {specialties.map((specialty) => (
-                  <Button
-                    key={specialty}
-                    variant={selectedSpecialty === specialty ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedSpecialty(specialty)}
-                    className={selectedSpecialty === specialty ? "btn-legal" : ""}
-                  >
-                    {specialty === "all" ? "All Specialties" : specialty}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Profile Section */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Profile Header */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-4">
+                <div className="flex flex-col md:flex-row items-start gap-6">
+                  <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-4xl font-bold">
+                    {currentLawyer.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h1 className="text-3xl font-bold">{currentLawyer.name}</h1>
+                      {currentLawyer.verified && (
+                        <Award className="h-6 w-6 text-blue-600" />
+                      )}
+                    </div>
+                    <Badge variant="secondary" className="mb-3 text-sm">
+                      {currentLawyer.specialty}
+                    </Badge>
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-5 w-5 fill-current text-yellow-500" />
+                        <span className="font-semibold">{currentLawyer.rating}</span>
+                        <span className="text-gray-600">({currentLawyer.reviews} reviews)</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-gray-600">
+                        <Clock className="h-4 w-4" />
+                        <span>{currentLawyer.experience} experience</span>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 leading-relaxed">{currentLawyer.description}</p>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
 
-        {/* Lawyers Grid */}
-        <section className="py-12 bg-muted">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gradient mb-4">Available Lawyers</h2>
-              <p className="text-muted-foreground">
-                {filteredLawyers.length} lawyer{filteredLawyers.length !== 1 ? 's' : ''} found
-              </p>
-            </div>
+            {/* Practice Areas */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-blue-600" />
+                  Practice Areas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {practiceAreas.map((area, index) => (
+                    <div key={index} className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg">
+                      <CheckCircle className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                      <span className="text-sm">{area}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredLawyers.map((lawyer) => (
-                <Card key={lawyer.id} className="card-legal h-full flex flex-col">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <CardTitle className="text-lg">{lawyer.name}</CardTitle>
-                          {lawyer.verified && (
-                            <Award className="h-4 w-4 text-secondary" />
-                          )}
+            {/* Achievements & Awards */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-blue-600" />
+                  Awards & Recognition
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {achievements.map((achievement, index) => (
+                    <div key={index} className="flex items-center gap-2 p-2">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div>
+                      <span className="text-sm">{achievement}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Client Reviews */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-blue-600" />
+                  Client Reviews
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {clientReviews.map((review) => (
+                    <div key={review.id} className="border-l-4 border-blue-600 pl-4 py-2">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="flex">
+                          {[...Array(review.rating)].map((_, i) => (
+                            <Star key={i} className="h-4 w-4 fill-current text-yellow-500" />
+                          ))}
                         </div>
-                        <Badge variant="secondary" className="mb-2">
-                          {lawyer.specialty}
-                        </Badge>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Star className="h-4 w-4 fill-current text-secondary" />
-                          <span>{lawyer.rating}</span>
-                          <span>({lawyer.reviews} reviews)</span>
-                        </div>
+                        <span className="font-semibold text-sm">{review.name}</span>
+                        <span className="text-gray-500 text-xs">{review.date}</span>
                       </div>
-                      <div className="text-right text-sm">
-                        <div className="font-semibold text-primary">{lawyer.price}</div>
-                        <div className="text-muted-foreground">{lawyer.experience}</div>
-                      </div>
+                      <p className="text-sm text-gray-700">{review.review}</p>
                     </div>
-                  </CardHeader>
-
-                  <CardContent className="flex-1 flex flex-col">
-                    <p className="text-sm text-muted-foreground mb-4 flex-1">
-                      {lawyer.description}
-                    </p>
-
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="h-3 w-3 text-muted-foreground" />
-                        <span>{lawyer.location}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Phone className="h-3 w-3 text-muted-foreground" />
-                        <span>{lawyer.phone}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Mail className="h-3 w-3 text-muted-foreground" />
-                        <span>{lawyer.email}</span>
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <div className="text-xs text-muted-foreground mb-1">Education:</div>
-                      <div className="text-sm font-medium">{lawyer.education}</div>
-                    </div>
-
-                    <div className="mb-4">
-                      <div className="text-xs text-muted-foreground mb-1">Languages:</div>
-                      <div className="flex flex-wrap gap-1">
-                        {lawyer.languages.map((lang) => (
-                          <Badge key={lang} variant="outline" className="text-xs">
-                            {lang}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2 mt-auto">
-                      <Button 
-                        className="w-full btn-legal"
-                        onClick={() => handleRegisterWithLawyer(lawyer)}
-                      >
-                        <Calendar className="h-4 w-4 mr-2" />
-                        Register with {lawyer.name.split(' ')[0]}
-                      </Button>
-                      <Button variant="outline" className="w-full" size="sm">
-                        View Profile
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {filteredLawyers.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">
-                  No lawyers found matching your criteria. Try adjusting your search or filters.
-                </p>
-              </div>
-            )}
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </section>
-      </main>
 
-      <Footer />
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Contact Information */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle>Contact Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm">{currentLawyer.location}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm">{currentLawyer.phone}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Mail className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm">{currentLawyer.email}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Globe className="h-4 w-4 text-gray-500" />
+                  <div className="flex flex-wrap gap-1">
+                    {currentLawyer.languages.map((lang) => (
+                      <Badge key={lang} variant="outline" className="text-xs">
+                        {lang}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Pricing & Availability */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle>Pricing & Availability</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600">{currentLawyer.price}</div>
+                  <div className="text-sm text-gray-600">Consultation Fee</div>
+                </div>
+                <Separator />
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Response Time:</span>
+                    <span className="font-semibold">Within 4 hours</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Availability:</span>
+                    <span className="font-semibold text-green-600">Available</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Education */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle>Education</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <BookOpen className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <h3 className="font-semibold">{currentLawyer.education}</h3>
+                  <p className="text-sm text-gray-600">Juris Doctor (J.D.)</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Action Buttons */}
+            <div className="space-y-3">
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                <Calendar className="h-4 w-4 mr-2" />
+                Schedule Consultation
+              </Button>
+              <Button variant="outline" className="w-full">
+                <Mail className="h-4 w-4 mr-2" />
+                Send Message
+              </Button>
+              <Button variant="outline" className="w-full">
+                <Phone className="h-4 w-4 mr-2" />
+                Call Now
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Lawyers;
+export default LawyerProfile;
